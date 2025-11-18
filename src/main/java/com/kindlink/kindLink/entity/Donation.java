@@ -27,4 +27,51 @@ public class Donation {
     private String paymentMethod;
 
     // getters and setters
+    public Long getDonationId() {
+        return donationId;
+    }
+
+    public void setDonationId(Long donationId) {
+        this.donationId = donationId;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public User getDonor() {
+        return donor;
+    }
+
+    public void setDonor(User donor) {
+        this.donor = donor;
+    }
+
+    public BigDecimal getDonationAmount() {
+        return donationAmount;
+    }
+
+    public void setDonationAmount(BigDecimal donationAmount) {
+        this.donationAmount = donationAmount;
+    }
+
+    public LocalDateTime getDonationDate() {
+        return donationDate;
+    }
+
+    public void setDonationDate(LocalDateTime donationDate) {
+        this.donationDate = donationDate;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
 }
