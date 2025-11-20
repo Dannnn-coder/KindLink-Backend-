@@ -2,9 +2,7 @@ package com.kindlink.kindLink.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "campaigns")
@@ -14,35 +12,28 @@ public class Campaign {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long campaignId;
 
-    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String dates;
 
-    private BigDecimal goalAmount = BigDecimal.ZERO;
-    private BigDecimal currentAmount = BigDecimal.ZERO;
+    private BigDecimal goalAmount;
+    private BigDecimal currentAmount;
 
-    // FK to User
     @ManyToOne
-    @JoinColumn(name = "creatorId", nullable = false)
+    @JoinColumn(name = "creator_id")
     private User creator;
 
-    // Campaign <--> Category (Many-to-Many)
-    @ManyToMany
-    @JoinTable(
-        name = "campaign_categories",
-        joinColumns = @JoinColumn(name = "campaign_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
+    @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
+    private List<Donation> donations;
+
+    @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
+    private List<CampaignCategory> campaignCategories;
 
     public Campaign() {}
 
-    // Getters & Setters
     public Long getCampaignId() { return campaignId; }
     public void setCampaignId(Long campaignId) { this.campaignId = campaignId; }
 
@@ -52,11 +43,8 @@ public class Campaign {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public String getDates() { return dates; }
+    public void setDates(String dates) { this.dates = dates; }
 
     public BigDecimal getGoalAmount() { return goalAmount; }
     public void setGoalAmount(BigDecimal goalAmount) { this.goalAmount = goalAmount; }
@@ -67,6 +55,9 @@ public class Campaign {
     public User getCreator() { return creator; }
     public void setCreator(User creator) { this.creator = creator; }
 
-    public Set<Category> getCategories() { return categories; }
-    public void setCategories(Set<Category> categories) { this.categories = categories; }
+    public List<Donation> getDonations() { return donations; }
+    public void setDonations(List<Donation> donations) { this.donations = donations; }
+
+    public List<CampaignCategory> getCampaignCategories() { return campaignCategories; }
+    public void setCampaignCategories(List<CampaignCategory> campaignCategories) { this.campaignCategories = campaignCategories; }
 }

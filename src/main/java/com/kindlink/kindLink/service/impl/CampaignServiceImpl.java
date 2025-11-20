@@ -3,33 +3,46 @@ package com.kindlink.kindLink.service.impl;
 import com.kindlink.kindLink.entity.Campaign;
 import com.kindlink.kindLink.repository.CampaignRepository;
 import com.kindlink.kindLink.service.CampaignService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CampaignServiceImpl implements CampaignService {
 
-    @Autowired
-    private CampaignRepository campaignRepository;
+    private final CampaignRepository repo;
+
+    public CampaignServiceImpl(CampaignRepository repo) { this.repo = repo; }
 
     @Override
-    public Campaign save(Campaign campaign) {
-        return campaignRepository.save(campaign);
+    public List<Campaign> getAllCampaigns() { return repo.findAll(); }
+
+    @Override
+    public Campaign createCampaign(Campaign campaign) {
+        if (campaign.getCurrentAmount() == null) campaign.setCurrentAmount(java.math.BigDecimal.ZERO);
+        return repo.save(campaign);
     }
 
     @Override
-    public Campaign get(Long id) {
-        return campaignRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campaign not found"));
+    public Campaign getCampaignById(Long id) {
+        return repo.findById(id).orElse(null);
     }
 
     @Override
-    public List<Campaign> search(String title) {
-        if (title == null || title.isBlank()) {
-            return campaignRepository.findAll();
-        }
-        return campaignRepository.findByTitleContainingIgnoreCase(title);
+    public Campaign updateCampaign(Long id, Campaign campaign) {
+        Optional<Campaign> opt = repo.findById(id);
+        if (opt.isEmpty()) return null;
+        Campaign existing = opt.get();
+        existing.setTitle(campaign.getTitle());
+        existing.setDescription(campaign.getDescription());
+        existing.setDates(campaign.getDates());
+        existing.setGoalAmount(campaign.getGoalAmount());
+        existing.setCurrentAmount(campaign.getCurrentAmount());
+        existing.setCreator(campaign.getCreator());
+        return repo.save(existing);
     }
+
+    @Override
+    public void deleteCampaign(Long id) { repo.deleteById(id); }
 }
