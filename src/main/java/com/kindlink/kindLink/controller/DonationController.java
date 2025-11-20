@@ -1,56 +1,34 @@
 package com.kindlink.kindLink.controller;
 
 import com.kindlink.kindLink.entity.Donation;
-import com.kindlink.kindLink.entity.User;
-import com.kindlink.kindLink.service.CampaignService;
 import com.kindlink.kindLink.service.DonationService;
-import com.kindlink.kindLink.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/donations")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DonationController {
 
-    @Autowired
-    private DonationService donationService;
+    private final DonationService service;
+    public DonationController(DonationService service) { this.service = service; }
 
-    @Autowired
-    private CampaignService campaignService;
+    @GetMapping
+    public List<Donation> getAll() { return service.getAllDonations(); }
 
-    @Autowired
-    private UserRepository userRepository;
+    @PostMapping
+    public Donation create(@RequestBody Donation donation) { return service.createDonation(donation); }
 
-    @GetMapping("/donate/{id}")
-    public String donatePage(@PathVariable Long id, Model model) {
-        model.addAttribute("campaign", campaignService.get(id));
-        return "donate";
-    }
+    @GetMapping("/{id}")
+    public Donation getById(@PathVariable Long id) { return service.getDonationById(id); }
 
-    @PostMapping("/donate/{id}")
-    public String donate(
-            @PathVariable Long id,
-            @RequestParam BigDecimal amount,
-            @RequestParam String method,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) { service.deleteDonation(id); }
 
-        Donation donation = new Donation();
-        donation.setCampaign(campaignService.get(id));
-        donation.setDonationAmount(amount);
-        donation.setPaymentMethod(method);
+    @GetMapping("/campaign/{campaignId}")
+    public List<Donation> byCampaign(@PathVariable Long campaignId) { return service.getDonationsByCampaign(campaignId); }
 
-        User donor = userRepository.findByEmail(userDetails.getUsername());
-        donation.setDonor(donor);
-
-        donationService.donate(donation);
-
-        return "redirect:/campaign/" + id;
-    }
+    @GetMapping("/donor/{donorId}")
+    public List<Donation> byDonor(@PathVariable Long donorId) { return service.getDonationsByDonor(donorId); }
 }
