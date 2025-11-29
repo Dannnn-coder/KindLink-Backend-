@@ -29,8 +29,13 @@ public class Campaign {
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
     private List<Donation> donations;
 
-    @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
-    private List<CampaignCategory> campaignCategories;
+    @ManyToMany
+    @JoinTable(
+        name = "campaign_categories",
+        joinColumns = @JoinColumn(name = "campaign_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 
     public Campaign() {}
 
@@ -58,6 +63,6 @@ public class Campaign {
     public List<Donation> getDonations() { return donations; }
     public void setDonations(List<Donation> donations) { this.donations = donations; }
 
-    public List<CampaignCategory> getCampaignCategories() { return campaignCategories; }
-    public void setCampaignCategories(List<CampaignCategory> campaignCategories) { this.campaignCategories = campaignCategories; }
+    public List<Category> getCategories() { return categories; }
+    public void setCategories(List<Category> categories) { this.categories = categories; }
 }
