@@ -1,6 +1,7 @@
 package com.kindlink.kindLink.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -15,22 +16,16 @@ public class Category {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    // ──────────────────────────────
-    // Required by JPA
-    // ──────────────────────────────
+    @ManyToMany(mappedBy = "categories")
+    private List<Campaign> campaigns;
+
     public Category() {}
 
-    // ──────────────────────────────
-    // Your missing constructor
-    // ──────────────────────────────
     public Category(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    // ──────────────────────────────
-    // Getters & Setters
-    // ──────────────────────────────
     public Long getCategoryId() {
         return categoryId;
     }
@@ -53,5 +48,13 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Campaign> getCampaigns() {
+        return campaigns;
+    }
+
+    public void setCampaigns(List<Campaign> campaigns) {
+        this.campaigns = campaigns;
     }
 }
