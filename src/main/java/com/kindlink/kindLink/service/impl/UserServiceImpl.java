@@ -13,13 +13,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repo;
 
-    public UserServiceImpl(UserRepository repo) { this.repo = repo; }
+    public UserServiceImpl(UserRepository repo) { 
+        this.repo = repo; 
+    }
 
     @Override
-    public List<User> getAllUsers() { return repo.findAll(); }
+    public List<User> getAllUsers() { 
+        return repo.findAll(); 
+    }
 
     @Override
-    public User createUser(User user) { return repo.save(user); }
+    public User createUser(User user) { 
+        return repo.save(user); 
+    }
 
     @Override
     public User getUserById(Long id) {
@@ -31,13 +37,25 @@ public class UserServiceImpl implements UserService {
         Optional<User> opt = repo.findById(id);
         if (opt.isEmpty()) return null;
         User existing = opt.get();
-        existing.setUsername(user.getUsername());
-        existing.setEmail(user.getEmail());
         existing.setFullname(user.getFullname());
+        existing.setEmail(user.getEmail());
+        existing.setPassword(user.getPassword());
         existing.setRole(user.getRole());
         return repo.save(existing);
     }
 
     @Override
-    public void deleteUser(Long id) { repo.deleteById(id); }
+    public void deleteUser(Long id) { 
+        repo.deleteById(id); 
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return repo.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repo.existsByEmail(email);
+    }
 }
