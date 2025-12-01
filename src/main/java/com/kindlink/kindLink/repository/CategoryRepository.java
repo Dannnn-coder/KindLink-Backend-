@@ -1,8 +1,11 @@
 package com.kindlink.kindLink.repository;
 
-import com.kindlink.kindLink.entity.Category;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.kindlink.kindLink.entity.Category;
+
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByName(String name);
+    Optional<Category> findByName(String name);
 }

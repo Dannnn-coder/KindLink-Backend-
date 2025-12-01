@@ -1,8 +1,17 @@
 package com.kindlink.kindLink.entity;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Entity;  // ADD THIS IMPORT
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "donations")
@@ -14,10 +23,12 @@ public class Donation {
 
     @ManyToOne
     @JoinColumn(name = "campaign_id")
+    @JsonIgnore  // ADD THIS - prevents donation from serializing campaign
     private Campaign campaign;
 
     @ManyToOne
     @JoinColumn(name = "donor_id")
+    @JsonIgnore  // ADD THIS - prevents donation from serializing user
     private User donor;
 
     private BigDecimal amount;
