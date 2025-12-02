@@ -1,8 +1,17 @@
 package com.kindlink.kindLink.entity;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Entity;  // ADD THIS IMPORT
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "donations")
@@ -13,65 +22,36 @@ public class Donation {
     private Long donationId;
 
     @ManyToOne
-    @JoinColumn(name = "campaignId", nullable = false)
+    @JoinColumn(name = "campaign_id")
+    @JsonIgnore  // ADD THIS - prevents donation from serializing campaign
     private Campaign campaign;
 
     @ManyToOne
-    @JoinColumn(name = "donorId")
+    @JoinColumn(name = "donor_id")
+    @JsonIgnore  // ADD THIS - prevents donation from serializing user
     private User donor;
 
-    private BigDecimal donationAmount;
-
-    private LocalDateTime donationDate = LocalDateTime.now();
-
+    private BigDecimal amount;
+    private LocalDate date;
     private String paymentMethod;
 
-    // getters and setters
-    public Long getDonationId() {
-        return donationId;
-    }
+    public Donation() {}
 
-    public void setDonationId(Long donationId) {
-        this.donationId = donationId;
-    }
+    public Long getDonationId() { return donationId; }
+    public void setDonationId(Long donationId) { this.donationId = donationId; }
 
-    public Campaign getCampaign() {
-        return campaign;
-    }
+    public Campaign getCampaign() { return campaign; }
+    public void setCampaign(Campaign campaign) { this.campaign = campaign; }
 
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
-    }
+    public User getDonor() { return donor; }
+    public void setDonor(User donor) { this.donor = donor; }
 
-    public User getDonor() {
-        return donor;
-    }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public void setDonor(User donor) {
-        this.donor = donor;
-    }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public BigDecimal getDonationAmount() {
-        return donationAmount;
-    }
-
-    public void setDonationAmount(BigDecimal donationAmount) {
-        this.donationAmount = donationAmount;
-    }
-
-    public LocalDateTime getDonationDate() {
-        return donationDate;
-    }
-
-    public void setDonationDate(LocalDateTime donationDate) {
-        this.donationDate = donationDate;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
 }

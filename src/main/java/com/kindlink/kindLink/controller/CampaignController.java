@@ -1,66 +1,58 @@
 package com.kindlink.kindLink.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.kindlink.kindLink.entity.Campaign;
-import com.kindlink.kindLink.entity.User;
-import com.kindlink.kindLink.repository.CategoryRepository;
-import com.kindlink.kindLink.repository.UserRepository;
 import com.kindlink.kindLink.service.CampaignService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-@Controller
+@RestController
+@RequestMapping("/api/campaigns")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CampaignController {
 
-    @Autowired
-    private CampaignService campaignService;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @GetMapping("/campaigns")
-    public String campaignList(
-            @RequestParam(required = false) String search,
-            Model model) {
-
-        model.addAttribute("campaignList", campaignService.search(search));
-        model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("search", search);
-
-        return "campaigns";
+    private final CampaignService service;
+    
+    public CampaignController(CampaignService service) { 
+        this.service = service; 
     }
 
-    @GetMapping("/campaign/{id}")
-    public String campaignDetails(@PathVariable Long id, Model model) {
-        model.addAttribute("campaign", campaignService.get(id));
-        return "campaign-details";
+    // Public - anyone can view campaigns
+    @GetMapping
+    public List<Campaign> getAll() { 
+        return service.getAllCampaigns(); 
     }
 
-    @GetMapping("/create-campaign")
-    public String createCampaignPage(Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("campaign", new Campaign());
-        return "create-campaign";
+    // Public - anyone can view single campaign
+    @GetMapping("/{id}")
+    public Campaign getById(@PathVariable Long id) { 
+        return service.getCampaignById(id); 
     }
 
-    @PostMapping("/create-campaign")
-    public String createCampaign(
-            Campaign campaign,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    // Protected - only authenticated users can create
+    @PostMapping
+    public Campaign create(@RequestBody Campaign campaign) { 
+        return service.createCampaign(campaign); 
+    }
 
-        User creator = userRepository.findByEmail(userDetails.getUsername());
-        campaign.setCreator(creator);
+    // Protected - only creator can update
+    @PutMapping("/{id}")
+    public Campaign update(@PathVariable Long id, @RequestBody Campaign campaign) { 
+        return service.updateCampaign(id, campaign); 
+    }
 
-        campaignService.save(campaign);
-
-        return "redirect:/campaigns";
+    // Protected - only creator can delete
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) { 
+        service.deleteCampaign(id); 
     }
 }

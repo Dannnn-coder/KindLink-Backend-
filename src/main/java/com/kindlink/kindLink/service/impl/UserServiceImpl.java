@@ -3,28 +3,59 @@ package com.kindlink.kindLink.service.impl;
 import com.kindlink.kindLink.entity.User;
 import com.kindlink.kindLink.repository.UserRepository;
 import com.kindlink.kindLink.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository repo;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Override
-    public User register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
-        return userRepository.save(user);
+    public UserServiceImpl(UserRepository repo) { 
+        this.repo = repo; 
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public List<User> getAllUsers() { 
+        return repo.findAll(); 
+    }
+
+    @Override
+    public User createUser(User user) { 
+        return repo.save(user); 
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    @Override
+    public User updateUser(Long id, User user) {
+        Optional<User> opt = repo.findById(id);
+        if (opt.isEmpty()) return null;
+        User existing = opt.get();
+        existing.setFullname(user.getFullname());
+        existing.setEmail(user.getEmail());
+        existing.setPassword(user.getPassword());
+        existing.setRole(user.getRole());
+        return repo.save(existing);
+    }
+
+    @Override
+    public void deleteUser(Long id) { 
+        repo.deleteById(id); 
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return repo.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repo.existsByEmail(email);
     }
 }
