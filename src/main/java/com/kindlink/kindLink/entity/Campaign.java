@@ -22,6 +22,9 @@ public class Campaign {
     private BigDecimal goalAmount;
     private BigDecimal currentAmount;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
@@ -65,4 +68,7 @@ public class Campaign {
 
     public List<Category> getCategories() { return categories; }
     public void setCategories(List<Category> categories) { this.categories = categories; }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }
