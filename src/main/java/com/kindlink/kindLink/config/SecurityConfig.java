@@ -12,7 +12,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -24,21 +23,27 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+
+                // ⭐ Allow public access to downloaded image files
+                .requestMatchers("/api/files/**").permitAll()
+
                 // Public endpoints - no authentication required
                 .requestMatchers(
                     "/api/auth/**",
-                    "/api/users/register", 
+                    "/api/users/register",
                     "/api/users/login",
                     "/api/campaigns",
-                    "/api/campaigns/**"
+                    "/api/campaigns/**",
+                    "/api/donations/**",      
+                    "/api/files/**"
                 ).permitAll()
-                
+
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())
             .httpBasic(httpBasic -> httpBasic.disable());
-        
+
         return http.build();
     }
 
@@ -49,7 +54,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
