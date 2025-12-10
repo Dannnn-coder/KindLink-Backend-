@@ -16,7 +16,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;  // ADD THIS IMPORT
+import jakarta.persistence.Table;  
 
 @Entity
 @Table(name = "campaigns")
@@ -48,7 +48,7 @@ public class Campaign {
     private User creator;
 
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL)
-    @JsonIgnore  // ADD THIS - BREAK CIRCULAR REFERENCE
+    @JsonIgnore  
     private List<Donation> donations;
 
     @ManyToMany

@@ -5,13 +5,14 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Entity;  // ADD THIS IMPORT
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "donations")
@@ -19,20 +20,26 @@ public class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "donation_id")
     private Long donationId;
 
     @ManyToOne
     @JoinColumn(name = "campaign_id")
-    @JsonIgnore  // ADD THIS - prevents donation from serializing campaign
+    @JsonIgnore
     private Campaign campaign;
 
     @ManyToOne
     @JoinColumn(name = "donor_id")
-    @JsonIgnore  // ADD THIS - prevents donation from serializing user
+    @JsonIgnore  
     private User donor;
 
+    @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "date")
     private LocalDate date;
+
+    @Column(name = "payment_method")
     private String paymentMethod;
 
     public Donation() {}
